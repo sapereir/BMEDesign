@@ -1,4 +1,4 @@
-%% 42302 Final Project Model for Ricky, Tessa, and Avishi
+%% 42402 Mathematical Model for Ricky, Gage, and Anusha
 
 %% Load Data
 
