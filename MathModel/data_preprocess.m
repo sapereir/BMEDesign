@@ -54,3 +54,44 @@ subplot(2,1,2); % flow data
     xline(16.12);
     xlabel('time(sec)');
     ylabel('d/dt(flow rate(mL/s))');
+    
+%% Part 1: Removing Time Delay
+% Loop through the beginning of the vector
+
+qstop = size(flow);
+qstop = qstop(2); %get length of the data vector
+
+q_i = 1;
+while (q_i <= qstop) && (flow(q_i) == 0)
+    q_i = q_i + 1;
+end
+
+%repeat for pressure
+pstop = size(pressure);
+pstop = pstop(2); %get length of the data vector
+
+p_i = 1;
+while (p_i <= pstop) && (pressure(p_i) == 0)
+    p_i = p_i + 1;
+end
+
+i = max(p_i, q_i);
+new_flow = flow(i:end);
+new_pressure = pressure(i:end);
+new_time = time(i:end);
+
+% Visualize Partially pre-processed Data
+figure %pressure data
+subplot(2,1,1); 
+    plot(new_time, new_pressure);
+    xline(16.12); %end of steady state by visual inspection
+                  %(around where part of preprocessing should occur)
+    xlabel('time(sec)');
+    ylabel('pressure(kPa)');
+    title('Catheter Flow and Pressure Data');
+    
+subplot(2,1,2); % flow data
+    plot(new_time, new_flow);
+    xline(16.12);
+    xlabel('time(sec)');
+    ylabel('flow rate(mL/s)');
