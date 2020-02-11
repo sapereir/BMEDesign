@@ -47,43 +47,90 @@ subplot(2,1,1);
                   %(around where part of preprocessing should occur)
     xlabel('time(sec)');
     ylabel('d/dt(pressure(kPa))');
-    title('Catheter Flow and Pressure Data');
+    title('Derivative of Catheter Flow and Pressure Data');
     
 subplot(2,1,2); % flow data
     plot(time,deriv_flow);
     xline(16.12);
     xlabel('time(sec)');
     ylabel('d/dt(flow rate(mL/s))');
+
     
-%% Part 1: Removing Time Delay
-% Loop through the beginning of the vector
+%% Truncating at end of first steady state
+
+% Loop through the vector to detect significant change in derivative
+% (outliers). Specifically, first significant change in derivative that is
+% negative should mark the end of the first steady state.
+
+%Visualize outliers in derivative
+deriv_outliers_flow = isoutlier(deriv_flow);
+deriv_outliers_pressure = isoutlier(deriv_pressure);
+
+figure %pressure data
+subplot(2,1,1); 
+    plot(time,deriv_outliers_pressure);
+    xline(16.12); %end of steady state by visual inspection
+                  %(around where part of preprocessing should occur)
+    xlabel('time(sec)');
+    ylabel('d/dt(pressure(kPa))');
+    title('Derivative of Catheter Flow and Pressure Data');
+    
+subplot(2,1,2); % flow data
+    plot(time,deriv_outliers_flow);
+    xline(16.12);
+    xlabel('time(sec)');
+    ylabel('d/dt(flow rate(mL/s))');
 
 qstop = size(flow);
 qstop = qstop(2); %get length of the data vector
 
 q_i = 1;
-while (q_i <= qstop) && (flow(q_i) == 0)
+while (q_i <= qstop) && ~((deriv_outliers_flow(q_i) == 1) && ...
+    (deriv_flow(q_i) < 0))
+    q_i = q_i + 1;
+end
+
+new_flow = flow(1:q_i-1);
+new_time = time(1:q_i-1);
+new_pressure = pressure(1:q_i-1);
+
+figure
+plot(new_time,new_flow);
+xline(16.12);
+xlabel('time(sec)');
+ylabel('d/dt(flow rate(mL/s))');
+
+%% Removing Time Delay
+% Loop through the beginning of the vector and remove values at the same
+% index for the time, flow, and pressure vectors such that no leading zeros
+% remain in either the flow or pressure vectors.
+
+qstop = size(new_flow);
+qstop = qstop(2); %get length of the data vector
+
+q_i = 1;
+while (q_i <= qstop) && (new_flow(q_i) == 0)
     q_i = q_i + 1;
 end
 
 %repeat for pressure
-pstop = size(pressure);
+pstop = size(new_pressure);
 pstop = pstop(2); %get length of the data vector
 
 p_i = 1;
-while (p_i <= pstop) && (pressure(p_i) == 0)
+while (p_i <= pstop) && (new_pressure(p_i) == 0)
     p_i = p_i + 1;
 end
 
 i = max(p_i, q_i);
-new_flow = flow(i:end);
-new_pressure = pressure(i:end);
-new_time = time(i:end);
+newest_flow = new_flow(i:end);
+newest_pressure = new_pressure(i:end);
+newest_time = new_time(i:end);
 
 % Visualize Partially pre-processed Data
 figure %pressure data
 subplot(2,1,1); 
-    plot(new_time, new_pressure);
+    plot(newest_time, newest_pressure);
     xline(16.12); %end of steady state by visual inspection
                   %(around where part of preprocessing should occur)
     xlabel('time(sec)');
@@ -91,7 +138,8 @@ subplot(2,1,1);
     title('Catheter Flow and Pressure Data');
     
 subplot(2,1,2); % flow data
-    plot(new_time, new_flow);
+    plot(newest_time, newest_flow);
     xline(16.12);
     xlabel('time(sec)');
     ylabel('flow rate(mL/s)');
+
