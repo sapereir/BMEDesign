@@ -1,6 +1,5 @@
 
 import numpy as np
-import matplotlib.pyplot as plt
 import math
 import torch
 import time
@@ -43,7 +42,7 @@ class MyDataset(Dataset):
             row[3], placementCount = self.convertIntoBinary(placements, placementCount, row[3])
             row[4], protocolCount = self.convertIntoBinary(protocols, protocolCount, row[4])
             row[8], transientCount = self.convertIntoBinary(transients, transientCount, row[8])
-            row[7] = self.setTermination(entry[7])
+            row[7] = self.setTermination(row[7])
             #convert the row from list to immutable tuple
             #append to all values
             self.allValues.append(tuple(row))
@@ -53,7 +52,7 @@ class MyDataset(Dataset):
         #primarily used in __getItem__ to index into data set
         self.indexIJ = []
         for row in range(len(self.allValues)):
-            currY = X[i]
+            currY = self.allValues[row]
             for col in range(len(currY)):
                 self.indexIJ.append((row, col))
 
@@ -75,7 +74,7 @@ class MyDataset(Dataset):
 
     #used to enumerate the strings of certain columns into corresponding integers
     #returns the value (enumeration) of that string in the dict and the current # of occurances of that variable 
-    def convertIntoBinary(dic, count, var):
+    def convertIntoBinary(self, dic, count, var):
         if var not in dic.keys():
             dic[var] = count+1
             count += 1
@@ -109,7 +108,7 @@ def readFile(path):
                 chunk = list(map(float, chunk)) 
                 row.append(chunk)
             lines.append(row)
-    return lines, ret
+    return lines
 
 
 #variables to run each function
