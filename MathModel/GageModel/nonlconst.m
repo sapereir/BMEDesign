@@ -1,11 +1,9 @@
 function [c, ceq] = nonlconst(x)
-    A = x(1);
-    K = x(2);
-    C = x(3);
-    B = x(4);
-    v = x(5);
-    Q = x(6);
+    K = x(1);
+    B = x(2);
+    v = x(3);
+    Q = x(4);
     
-    c = A;
+    c = 0;
     ceq = [];
 end

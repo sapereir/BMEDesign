@@ -1,15 +1,20 @@
-function sumSqErrors = objFxn(x)
-    A = x(1);
-    K = x(2);
-    C = x(3);
-    B = x(4);
-    v = x(5);
-    Q = x(6);
+function sumSqErrors = objFxn(x,texp,Pexp)
+    K = x(1);
+    B = x(2);
+    v = x(3);
+    Q = x(4);
     
-    t = linspace(0,1000,1000);
-    Pmodel = (K-A)./(C + Q.*exp(-B.*t)).^(1./v);
-    Pexp = linspace(0,1000,1000);
-    error = Pmodel - Pexp;
-    errorSq = error.^2;
-    sumSqErrors = sum(errorSq);
+    sumSqErrors = 0;
+    len = length(texp);
+    
+    %texp,Pext is a vector of all the experimental curves we are
+    %analyzing with this optimization function
+    for i = 1:len
+        %[Pmax,Imax] = max(Pexp(i)); figure out how to truncate after
+        %Maxiumum pressure is reached later
+        Pmodel = (K)./(1 + Q.*exp(-B.*texp(i))).^(1./v);
+        error = Pmodel - Pexp(i);
+        errorSq = error.^2;
+        sumSqErrors = sumSqErrors + sum(errorSq);
+    end
 end
