@@ -168,7 +168,7 @@ subplot(2,1,2); % flow data
     
 %% Using Unit Step as a Reference
 
-%unit step scaled by max flow for reference
+%unit step scaled by max flow for reference 
 ref_q = zeros(1,length(new_flow));
 ref_q = ref_q + 6;
 figure
