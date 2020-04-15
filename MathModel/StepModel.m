@@ -27,4 +27,34 @@ gauge23 = datanew2(53674:53675,:);
 %Gauge 24
 gauge24 = datanew2(53676:54662,:);
 
-%% Isolate Data From Each Gauge Type
+%% Isolating Data Vectors and Values For Gauge 22
+
+row_num = 15000; %row number
+row = gauge22(row_num,:);
+max_q = row.Var6;
+
+data = row.Var12{1,1};
+data = convertCharsToStrings(data);
+data = strip(data,'left','[');
+data = strip(data,'right','[');
+data = split(data, ';');
+time = data(1);
+pressure = data(2);
+flow = data(3);
+
+% Convert from string to int or int vector
+
+flow = textscan(flow, '%f', 'Delimiter',',' );
+flow = flow{1, 1}';
+
+pressure = textscan(pressure, '%f', 'Delimiter',',');
+pressure = pressure{1, 1}';
+
+time = textscan(time, '%f', 'Delimiter', ',');
+time = time{1, 1}';
+
+max_q = max_q{1,1};
+max_q = strip(max_q,'left','@');
+max_q = textscan(max_q, '%f', 'Delimiter', ' ');
+max_q = max_q(1);
+max_q = max_q{1,1}'; 
