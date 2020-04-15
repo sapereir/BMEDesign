@@ -1,6 +1,6 @@
 clc;clear;
 %import data from John
-data = readtable('SN-SRMC-CT-1 3.txt');
+data = readtable('SN-SRMC-CT-1.txt');
 %remove columns indicating protocol common amount all data points
 datanew = removevars(data,{'Var1', 'Var2', 'Var3','Var11'});
 %sort data by 'Abort'
@@ -27,3 +27,4 @@ gauge23 = datanew2(53674:53675,:);
 %Gauge 24
 gauge24 = datanew2(53676:54662,:);
 
+%% Isolate Data From 

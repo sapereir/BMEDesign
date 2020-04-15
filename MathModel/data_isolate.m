@@ -33,6 +33,3 @@ max_q = strip(max_q,'left','@');
 max_q = textscan(max_q, '%f', 'Delimiter', ' ');
 max_q = max_q(1);
 max_q = max_q{1,1}'; 
-
-
-
