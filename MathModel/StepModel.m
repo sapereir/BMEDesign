@@ -27,4 +27,4 @@ gauge23 = datanew2(53674:53675,:);
 %Gauge 24
 gauge24 = datanew2(53676:54662,:);
 
-%% Isolate Data From 
+%% Isolate Data From Each Gauge Type
