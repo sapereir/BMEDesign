@@ -29,7 +29,7 @@ gauge24 = datanew2(53676:54662,:);
 
 %% Isolating Data Vectors and Values For Gauge 22
 
-row_num = 15000; %row number
+row_num = 25; %row number
 row = gauge22(row_num,:);
 max_q = row.Var6;
 
@@ -58,3 +58,15 @@ max_q = strip(max_q,'left','@');
 max_q = textscan(max_q, '%f', 'Delimiter', ' ');
 max_q = max_q(1);
 max_q = max_q{1,1}'; 
+
+%% Preprocess Data
+
+[q_err, newest_time, newest_pressure,newest_flow] = ...
+    dataPrep(max_q, time, flow, pressure);
+
+figure
+plot(newest_time, q_err);
+title("Magnitude of Flow Error Using Procedure as Reference");
+xlabel("time (s)");
+ylabel("Error");
+

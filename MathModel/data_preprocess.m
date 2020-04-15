@@ -171,9 +171,10 @@ subplot(2,1,2); % flow data
 
 %unit step scaled by max flow for reference 
 ref_q = zeros(1,length(new_flow));
-ref_q = ref_q + 6;
+ref_q = ref_q + max_q;
+q_err = abs((ref_q-new_flow)./ref_q);
 figure
-plot(new_time, abs((ref_q-new_flow)./ref_q));
+plot(new_time, q_err);
 title("Magnitude of Flow Error Using Procedure as Reference");
 xlabel("time (s)");
 ylabel("Error");
