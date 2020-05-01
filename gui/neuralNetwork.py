@@ -372,6 +372,8 @@ plt.show()
 
 
 # In[ ]:
+def predictMaxPressure(contrast, saline, mixed, amountC, amountS, percentM, flowRate):
+    return 1000
 
 
 
