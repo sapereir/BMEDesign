@@ -7,6 +7,8 @@ from datetime import datetime
 import bmeGUI
 import pyqtgraph as pg
 import callMatlabInPython
+# import neuralNetwork
+
 
 class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 	def __init__(self, parent=None):
@@ -22,7 +24,10 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.displayPressureGraph.setEnabled(False)
 		self.displayFlowGraph.setEnabled(False)
 		self.displayQerr.setEnabled(False)
+
+		# data variables used by both models
 		self.time, self.pressure, self.flow, self.q_err = [], [], [], []
+		self.contrast, self.saline, self.mixed, self.amountC, self.amountS, self.amountM, self.percentM, self.flowRate = 0, 0, 0, 0, 0, 0, 0, 0
 
 		self.data = []
 
@@ -73,7 +78,24 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.lineGraphView.plot(self.time,self.q_err, pen=self.pen)
 
 	def predict_pressure(self):
-		return
+		if (self.constrastInput.toPlainText() != "" or self.salineInput.toPlainText()!= "" or self.mixedInput.toPlainText() != "" or
+			 self.amountCInput.toPlainText() != "" or self.amountSInput.toPlainText() != "" or self.amountM.toPlainText() != "" or 
+			 self.percentMInput.toPlainText() != "" or self.flowRateInput.toPlainText() != ""):
+
+			# processes the data that will be inputted into the neural network
+			self.contrast = int(self.constrastInput.toPlainText())
+			self.saline = int(self.salineInput.toPlainText())
+			self.mixed = int(self.mixedInput.toPlainText())
+			self.amountC = int(self.amountCInput.toPlainText())
+			self.amountS = int(self.amountSInput.toPlainText())
+			self.amountM = int(self.amountMInput.toPlainText())
+			self.percentM = int(self.percentMInput.toPlainText())
+			self.flowRate = int(self.flowRateInput.toPlainText())
+			# maxPressureResult = neuralNetwork.predictMaxPressure(self.contrast, self.saline,self.mixed, self.amountC, self.amountS, self.percentM, self.flowRate)
+			while maxPressureResult is None:
+				pass
+			self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
+
 
 
 def main():

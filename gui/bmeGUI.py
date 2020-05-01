@@ -108,6 +108,7 @@ class Ui_MainWindow(object):
         self.neuralNetResults.setGeometry(QtCore.QRect(410, 70, 251, 81))
         self.neuralNetResults.setStyleSheet("background-color: rgb(206, 224, 255);")
         self.neuralNetResults.setObjectName("neuralNetResults")
+        self.neuralNetResults.setEnabled(False)
         self.label_10 = QtWidgets.QLabel(self.page)
         self.label_10.setGeometry(QtCore.QRect(50, 220, 60, 16))
         self.label_10.setObjectName("label_10")
