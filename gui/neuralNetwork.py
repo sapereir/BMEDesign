@@ -88,23 +88,27 @@ def readFile(path):
 
 # In[6]:
 
-original = readFile("SN-SRMC-CT-1.txt") 
 
-def parseData():
-    # original = readFile("SN-SRMC-CT-1.txt") + readFile("SN-SRMC-CT-2.txt")
-    gaugeTypes = set()
-    ivLocation = set()
-    protocol = dict()
-    pressure = set()
-    for inputX in original:
-        gaugeTypes.add(inputX[0])
-        ivLocation.add(inputX[1])
-        if inputX[2] in protocol:
-            protocol[inputX[2]] = protocol[inputX[2]] + [inputX[3]]
-        else:
-            protocol[inputX[2]] = [inputX[3]]
-        pressure.add(inputX[3])
-    return gaugeTypes, ivLocation, protocol, pressure
+original = readFile("SN-SRMC-CT-1.txt") + readFile("SN-SRMC-CT-2.txt")
+
+
+# In[7]:
+
+
+gaugeTypes = set()
+ivLocation = set()
+protocol = dict()
+pressure = set()
+for inputX in original:
+    gaugeTypes.add(inputX[0])
+    ivLocation.add(inputX[1])
+    if inputX[2] in protocol:
+        protocol[inputX[2]] = protocol[inputX[2]] + [inputX[3]]
+    else:
+        protocol[inputX[2]] = [inputX[3]]
+    pressure.add(inputX[3])
+
+"Gauge Types:", len(gaugeTypes), "IV Locations:", len(ivLocation), "Protocols:", len(protocol), "Pressures:", len(pressure)
 
 
 # In[8]:
@@ -144,36 +148,31 @@ def parseProtocol(x):
 def roundup(x):
     return int(math.ceil(x/100.0))*100
 
+mapGauge = dict()
+for i, x in enumerate(sorted(list(gaugeTypes))):
+    mapGauge[x] = i
+mapIV = dict()
+for i, x in enumerate(sorted(list(ivLocation))):
+    mapIV[x] = i
+mapPressure = dict()
 buckets = []
-def organizeData():
-    gaugeTypes, ivLocation, protocol, pressure = parseData()
-    mapGauge = dict()
-    for i, x in enumerate(sorted(list(gaugeTypes))):
-        mapGauge[x] = i
-    mapIV = dict()
-    for i, x in enumerate(sorted(list(ivLocation))):
-        mapIV[x] = i
-    mapPressure = dict()
-    count = 0
-    bucketSize = 20
-    for p in range(int(min(pressure)), int(roundup(max(pressure))), bucketSize):
-        buckets.append(p)
-        mapPressure[p] = count
-        count += 1
-    result = []
-    for v in original: 
-        for p in range(len(buckets) - 1):
-            if (v[3] >= buckets[p]) and (v[3] < buckets[p + 1]):
-                pressureV = buckets[p]
-        result.append(([mapGauge[v[0]], mapIV[v[1]]] + parseProtocol(v[2]) , mapPressure[pressureV]))
-    return result
+count = 0
+bucketSize = 20
+for p in range(int(min(pressure)), int(roundup(max(pressure))), bucketSize):
+    buckets.append(p)
+    mapPressure[p] = count
+    count += 1
+result = []
+for v in original: 
+    for p in range(len(buckets) - 1):
+        if (v[3] >= buckets[p]) and (v[3] < buckets[p + 1]):
+            pressureV = buckets[p]
+    result.append(([mapGauge[v[0]], mapIV[v[1]]] + parseProtocol(v[2]) , mapPressure[pressureV]))
 
-def predictMaxPressure(Contrast, Saline, Mixed, AmountC, AmountS, AmountM, PercentM, FlowRate):
-    return 1000
 
 # In[10]:
 
-result = organizeData()
+
 half = len(result)//2
 
 training_set = result[:half]
