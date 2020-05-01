@@ -33,6 +33,9 @@ class Ui_MainWindow(object):
         self.console_log.setEnabled(False)
         self.console_log.setGeometry(QtCore.QRect(40, 430, 721, 101))
         self.console_log.setStyleSheet("background-color: rgb(214, 254, 255);")
+        self.console_log.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.console_log.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.console_log.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.console_log.setObjectName("console_log")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(40, 410, 141, 21))
@@ -112,6 +115,11 @@ class Ui_MainWindow(object):
         self.flowRateInput.setGeometry(QtCore.QRect(140, 220, 201, 21))
         self.flowRateInput.setStyleSheet("background-color: rgb(229, 226, 255);")
         self.flowRateInput.setObjectName("flowRateInput")
+        self.predictPressure = QtWidgets.QPushButton(self.page)
+        self.predictPressure.setGeometry(QtCore.QRect(490, 170, 151, 31))
+        self.predictPressure.setAutoFillBackground(False)
+        self.predictPressure.setStyleSheet("background-color: rgb(255, 230, 136);")
+        self.predictPressure.setObjectName("predictPressure")
         self.stackedWidget.addWidget(self.page)
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
@@ -148,7 +156,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -166,6 +174,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "% M: "))
         self.neuralNetResults.setPlainText(_translate("MainWindow", "Predicted Pressure: "))
         self.label_10.setText(_translate("MainWindow", "Flow Rate:"))
+        self.predictPressure.setText(_translate("MainWindow", "Predict Pressure"))
         self.label_2.setText(_translate("MainWindow", "Results:"))
         self.runMatLabModel.setText(_translate("MainWindow", "Run MatLab Model"))
         self.displayPressureGraph.setText(_translate("MainWindow", "Display Prssure Graph"))

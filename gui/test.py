@@ -18,6 +18,7 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.displayPressureGraph.clicked.connect(self.update_graph_pressure)
 		self.displayFlowGraph.clicked.connect(self.update_graph_flow)
 		self.displayQerr.clicked.connect(self.update_graph_q_err)
+		self.predictPressure.clicked.connect(self.predict_pressure)
 		self.displayPressureGraph.setEnabled(False)
 		self.displayFlowGraph.setEnabled(False)
 		self.displayQerr.setEnabled(False)
@@ -70,6 +71,9 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.lineGraphView.clear()
 		self.lineGraphView.setLabel('bottom', 'Q_err')
 		self.lineGraphView.plot(self.time,self.q_err, pen=self.pen)
+
+	def predict_pressure(self):
+		return
 
 
 def main():

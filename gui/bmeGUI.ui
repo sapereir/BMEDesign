@@ -73,6 +73,15 @@
     <property name="styleSheet">
      <string notr="true">background-color: rgb(214, 254, 255);</string>
     </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustToContents</enum>
+    </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -112,7 +121,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QPlainTextEdit" name="constrastInput">
@@ -337,6 +346,25 @@
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(229, 226, 255);</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="predictPressure">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>170</y>
+        <width>151</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 230, 136);</string>
+      </property>
+      <property name="text">
+       <string>Predict Pressure</string>
       </property>
      </widget>
     </widget>
