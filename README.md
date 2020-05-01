@@ -1,6 +1,7 @@
 # BMEDesign
 
 To run the GUI:
-1. go to the BMEDesign/gui folder
-2. run the command in your terminal:
+1. open terminal
+2. cd into the BMEDesign/gui folder
+3. run the command in your terminal:
   python3 test.py
