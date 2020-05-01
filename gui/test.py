@@ -92,9 +92,9 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 			self.percentM = int(self.percentMInput.toPlainText())
 			self.flowRate = int(self.flowRateInput.toPlainText())
 			# maxPressureResult = neuralNetwork.predictMaxPressure(self.contrast, self.saline,self.mixed, self.amountC, self.amountS, self.percentM, self.flowRate)
-			while maxPressureResult is None:
-				pass
-			self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
+			# while maxPressureResult is None:
+			# 	pass
+			# self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
 
 
 
