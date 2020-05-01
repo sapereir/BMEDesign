@@ -15,10 +15,6 @@ import matlab.engine
 #Whatever your model outputs in Python
 
 def retrieveMatLab():
-	# time = list(range(0, 10))
-	# pressure = list(range(0, 100,10))
-	# flow = list(range(5, 55, 5))
-	# q_err = list(range(0,50, 5))
 	eng = matlab.engine.start_matlab()
 	time,pressure,flow,q_err = eng.StepModelForPython(nargout=4)
 	return time, pressure, flow, q_err
