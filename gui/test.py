@@ -49,6 +49,7 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.console_log.setPlainText(current_time+": "+ "Running MatLab Model\n" + self.console_log.toPlainText())
 		# function that retrieves mat lab data from callMatlabInPython is here
 		self.time, self.pressure, self.flow, self.q_err = callMatlabInPython.retrieveMatLab()
+		print(self.flow)
 		# wait for the matlab function to finish calculating the values
 		while self.time is None or self.pressure is None or self.flow is None or self.q_err is None:
 			pass
@@ -64,17 +65,20 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 
 	def update_graph_pressure(self):
 		self.lineGraphView.clear()
-		self.lineGraphView.setLabel('bottom', 'Pressure')
+		self.lineGraphView.setLabel('left', 'Pressure')
+		self.lineGraphView.setLabel('bottom', 'Time')
 		self.lineGraphView.plot(self.time, self.pressure, pen=self.pen)
 
 	def update_graph_flow(self):
 		self.lineGraphView.clear()
-		self.lineGraphView.setLabel('bottom', 'Flow')
+		self.lineGraphView.setLabel('left', 'Flow')
+		self.lineGraphView.setLabel('bottom', 'Time')
 		self.lineGraphView.plot(self.time,self.flow, pen=self.pen)
 
 	def update_graph_q_err(self):
 		self.lineGraphView.clear()
-		self.lineGraphView.setLabel('bottom', 'Q_err')
+		self.lineGraphView.setLabel('left', 'Q_err')
+		self.lineGraphView.setLabel('bottom', 'Time')
 		self.lineGraphView.plot(self.time,self.q_err, pen=self.pen)
 
 	def predict_pressure(self):
