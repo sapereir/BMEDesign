@@ -168,11 +168,6 @@ def organizeData():
         result.append(([mapGauge[v[0]], mapIV[v[1]]] + parseProtocol(v[2]) , mapPressure[pressureV]))
     return result
 
-# function that is called by gui to get the maxPressure value
-# not sure where to put it so i decided to put it after data parsing
-def predictMaxPressure(Contrast, Saline, Mixed, AmountC, AmountS, AmountM, PercentM, FlowRate):
-    return 1000
-
 # In[10]:
 
 result = organizeData()
@@ -240,141 +235,39 @@ model = model.float()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=1)
-device = torch.device("cuda" if cuda else "cpu")
+device = torch.device("cpu" if cuda else "cpu")
+model = torch.load("c_model.pt")
 model.to(device)
 print(model)
+model.eval()
 
+class MyDataset(Dataset):
+    def __init__(self, values):
+        self.values = values
 
-# In[15]:
+    def __len__(self):
+        return len(self.values)
 
-
-def train_epoch(model, train_loader, criterion, optimizer):
-    model.train()
-
-    running_loss = 0.0
-    total_predictions = 0.0
-    correct_predictions = 0.0
+    def __getitem__(self, index):
+        X = self.values[index]
+        return np.array(X).astype("float")
         
-    start_time = time.time()
-    og_time = start_time
-    for batch_idx, (data, target) in enumerate(train_loader):   
-        optimizer.zero_grad()   # .backward() accumulates gradients
-        data = data.to(device)
-        target = target.to(device) # all data & model on same device
+constant = 72
+# function that is called by gui to get the maxPressure value
+# not sure where to put it so i decided to put it after data parsing
+def predictMaxPressure(protocol):
+    d = MyDataset([protocol])
+    d_args = dict(shuffle=True, batch_size=256, num_workers=num_workers, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64)
+    d_loader = DataLoader(d, **d_args)
+    for y in d_loader:
+      y.to(device)
+      outputs = model(y.float())
+      _, predicted = torch.max(outputs.data, 1)
+    return predicted.item()*20*constant
 
-        outputs = model(data.float())
-        
-        _, predicted = torch.max(outputs.data, 1)
-        total_predictions += target.size(0)
-        correct_predictions += (predicted == target).sum().item()
-        
-        loss = criterion(outputs, target)
-        running_loss += loss.item()
-        if (batch_idx%200 == 0):
-            end_time = time.time()
-            print("Training:", "Batch Number " + str(batch_idx), "Running Loss:", running_loss, "Time:", end_time - start_time, 's')
-            start_time = end_time
-            
-        loss.backward()
-        optimizer.step()
-    end_time = time.time()
-    
-    running_loss /= len(train_loader)
-    acc = (correct_predictions/total_predictions)*100.0
-    print('Training Accuracy: ', acc, "    ", 'Training Loss: ', running_loss)
-    return running_loss, acc
+protocol, pressure = result[0]
+pressure = pressure*constant
 
+p = predictMaxPressure(protocol)
 
-# In[16]:
-
-
-def val_model(model, dev_loader, criterion):
-    with torch.no_grad():
-        model.eval()
-
-        running_loss = 0.0
-        total_predictions = 0.0
-        correct_predictions = 0.0
-
-        for batch_idx, (data, target) in enumerate(dev_loader):   
-            data = data.to(device)
-            target = target.to(device)
-
-            outputs = model(data.float())
-
-            _, predicted = torch.max(outputs.data, 1)
-            total_predictions += target.size(0)
-            correct_predictions += (predicted == target).sum().item()
-
-            loss = criterion(outputs, target).detach()
-            running_loss += loss.item()
-            
-        running_loss /= len(dev_loader)
-        acc = (correct_predictions/total_predictions)*100.0
-        print('Validation Accuracy: ', acc, "    ", 'Validation Loss: ', running_loss)
-        return running_loss, acc
-
-
-# In[17]:
-
-
-from tqdm import tqdm
-
-n_epochs = 5
-Train_loss = []
-Train_acc = []
-Val_loss = []
-Val_acc = []
-
-# from torch.utils.tensorboard import SummaryWriter
-# writer = SummaryWriter("./runs/training")
-
-for epoch in tqdm(range(n_epochs)):
-    print("Epoch " + str(epoch)) 
-            
-    train_l, train_a = train_epoch(model, train_loader, criterion, optimizer)
-    val_l, val_a = val_model(model, val_loader, criterion)
-    
-#     for name, param in model.named_parameters():
-#         writer.add_histogram('grad_' + name, param.grad.data, epoch)
-    
-    Train_loss.append(train_l)
-    Train_acc.append(train_a)
-    Val_loss.append(val_l)
-    Val_acc.append(val_a)
-    
-#     writer.add_scalars('loss', {'train': train_l, 'val': val_l}, epoch)
-#     writer.add_scalars('acc', {'train': train_a, 'val': val_a}, epoch)
-    
-    print("Saving the Model Version " + str(epoch))
-    torch.save(model, './model_final.pt')
-    torch.save(optimizer, './adam_model_final.pt')
-    print('='*115)
-
-
-# In[ ]:
-
-
-x = np.arange(n_epochs)
-
-plt.plot(x, Train_loss)
-plt.plot(x, Val_loss)
-plt.xlabel("Number of Epochs")
-plt.ylabel("Loss")
-plt.title("Epochs vs Loss")
-plt.savefig('Loss.png')
-plt.show()
-
-plt.plot(x, Train_acc)
-plt.plot(x, Val_acc)
-plt.xlabel("Number of Epochs")
-plt.ylabel("Accuracy")
-plt.title("Epochs vs Accuracy")
-plt.savefig('Accuracy.png')
-plt.show()
-
-
-# In[ ]:
-
-
-
+print("Pressure:", p)

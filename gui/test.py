@@ -49,7 +49,15 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.console_log.setPlainText(current_time+": "+ "Running MatLab Model\n" + self.console_log.toPlainText())
 		# function that retrieves mat lab data from callMatlabInPython is here
 		self.time, self.pressure, self.flow, self.q_err = callMatlabInPython.retrieveMatLab()
+<<<<<<< HEAD
 		print(self.flow)
+=======
+		#This output has an extra dimension, need to reduce the dimensionality...
+		self.time = self.time[0]
+		self.pressure = self.pressure[0]
+		self.flow = self.flow[0]
+		self.q_err = self.q_err[0]
+>>>>>>> f1f9365a3f505a72e500f534942f3cb9fdee34f2
 		# wait for the matlab function to finish calculating the values
 		while self.time is None or self.pressure is None or self.flow is None or self.q_err is None:
 			pass

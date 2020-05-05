@@ -1,7 +1,7 @@
 function [newest_time,newest_pressure,newest_flow,q_err] = StepModel()
 clc;clear;
 %import data from John
-data = readtable('RawData.txt');
+data = readtable('C:\Users\illum\Documents\School\Spring 20\BME Design\RawData.txt');
 %remove columns indicating protocol common amount all data points
 datanew = removevars(data,{'Var1', 'Var2', 'Var3','Var11'});
 %sort data by 'Abort'
