@@ -138,6 +138,7 @@ def parseProtocol(x):
     print(v)
 
 
+
 # In[9]:
 
 
@@ -169,6 +170,17 @@ def organizeData():
     return result
 
 # In[10]:
+
+def organizeProtocol(protocol, gauge, ivLoc):
+    gaugeTypes, ivLocation, p, pressure = parseData()
+    mapGauge = dict()
+    for i, x in enumerate(sorted(list(gaugeTypes))):
+        mapGauge[x] = i
+    mapIV = dict()
+    for i, x in enumerate(sorted(list(ivLocation))):
+        mapIV[x] = i
+    return ([mapGauge[gauge], mapIV[ivLoc] + protocol , 0])
+
 
 result = organizeData()
 half = len(result)//2
@@ -231,12 +243,12 @@ class MyNetwork(nn.Module):
 
 
 model = MyNetwork(input_size, hidden_size, output_size)
+model = torch.load("c_model.pt")
 model = model.float()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=1)
 device = torch.device("cpu" if cuda else "cpu")
-model = torch.load("c_model.pt")
 model.to(device)
 print(model)
 model.eval()

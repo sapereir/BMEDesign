@@ -7,6 +7,7 @@ from datetime import datetime
 import bmeGUI
 import pyqtgraph as pg
 import callMatlabInPython
+import neuralNetwork
 # import neuralNetwork
 
 
@@ -49,18 +50,15 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 		self.console_log.setPlainText(current_time+": "+ "Running MatLab Model\n" + self.console_log.toPlainText())
 		# function that retrieves mat lab data from callMatlabInPython is here
 		self.time, self.pressure, self.flow, self.q_err = callMatlabInPython.retrieveMatLab()
-<<<<<<< HEAD
 		print(self.flow)
-=======
 		#This output has an extra dimension, need to reduce the dimensionality...
-		self.time = self.time[0]
-		self.pressure = self.pressure[0]
-		self.flow = self.flow[0]
-		self.q_err = self.q_err[0]
->>>>>>> f1f9365a3f505a72e500f534942f3cb9fdee34f2
+		# self.time = self.time[0]
+		# self.pressure = self.pressure[0]
+		# self.flow = self.flow[0]
+		# self.q_err = self.q_err[0]
 		# wait for the matlab function to finish calculating the values
-		while self.time is None or self.pressure is None or self.flow is None or self.q_err is None:
-			pass
+		# while self.time is None or self.pressure is None or self.flow is None or self.q_err is None:
+		# 	pass
 		self.displayPressureGraph.setEnabled(True)
 		self.displayFlowGraph.setEnabled(True)
 		self.displayQerr.setEnabled(True)
@@ -103,10 +101,15 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 			self.amountM = int(self.amountMInput.toPlainText())
 			self.percentM = int(self.percentMInput.toPlainText())
 			self.flowRate = int(self.flowRateInput.toPlainText())
-			# maxPressureResult = neuralNetwork.predictMaxPressure(self.contrast, self.saline,self.mixed, self.amountC, self.amountS, self.percentM, self.flowRate)
-			# while maxPressureResult is None:
-			# 	pass
-			# self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
+			self.gaugeType = int(self.gaugeType.toPlainText())
+			self.location = int(self.location.toPlainText())
+			protocol = [self.contrast, self.saline, self.mixed, self.amountC, self.amountS, self.amountM, self.percentM, self.flowRate]
+			organizedProtocl = organizeProtocol(protocol, self.gaugeType, self.location)
+			maxPressureResult = neuralNetwork.predictMaxPressure(organizedProtocl)
+			while maxPressureResult is None:
+				pass
+			self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
+			return maxPressureResult
 
 
 
