@@ -243,7 +243,6 @@ class MyNetwork(nn.Module):
 
 
 model = MyNetwork(input_size, hidden_size, output_size)
-model = torch.load("c_model.pt")
 model = model.float()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
@@ -251,7 +250,98 @@ scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=1)
 device = torch.device("cpu" if cuda else "cpu")
 model.to(device)
 print(model)
-model.eval()
+
+
+def train_epoch(model, train_loader, criterion, optimizer):
+    model.train()
+
+    running_loss = 0.0
+    total_predictions = 0.0
+    correct_predictions = 0.0
+        
+    start_time = time.time()
+    og_time = start_time
+    for batch_idx, (data, target) in enumerate(train_loader):   
+        optimizer.zero_grad()   # .backward() accumulates gradients
+        data = data.to(device)
+        target = target.to(device) # all data & model on same device
+
+        outputs = model(data.float())
+        
+        _, predicted = torch.max(outputs.data, 1)
+        total_predictions += target.size(0)
+        correct_predictions += (predicted == target).sum().item()
+        
+        loss = criterion(outputs, target)
+        running_loss += loss.item()
+        if (batch_idx%200 == 0):
+            end_time = time.time()
+            print("Training:", "Batch Number " + str(batch_idx), "Running Loss:", running_loss, "Time:", end_time - start_time, 's')
+            start_time = end_time
+            
+        loss.backward()
+        optimizer.step()
+    end_time = time.time()
+    
+    running_loss /= len(train_loader)
+    acc = (correct_predictions/total_predictions)*100.0
+    print('Training Accuracy: ', acc, "    ", 'Training Loss: ', running_loss)
+    return running_loss, acc
+    
+def val_model(model, dev_loader, criterion):
+    with torch.no_grad():
+        model.eval()
+
+        running_loss = 0.0
+        total_predictions = 0.0
+        correct_predictions = 0.0
+
+        for batch_idx, (data, target) in enumerate(dev_loader):   
+            data = data.to(device)
+            target = target.to(device)
+
+            outputs = model(data.float())
+
+            _, predicted = torch.max(outputs.data, 1)
+            total_predictions += target.size(0)
+            correct_predictions += (predicted == target).sum().item()
+
+            loss = criterion(outputs, target).detach()
+            running_loss += loss.item()
+            
+        running_loss /= len(dev_loader)
+        acc = (correct_predictions/total_predictions)*100.0
+        print('Validation Accuracy: ', acc, "    ", 'Validation Loss: ', running_loss)
+        return running_loss, acc
+        
+from tqdm import tqdm
+
+n_epochs = 5
+Train_loss = []
+Train_acc = []
+Val_loss = []
+Val_acc = []
+
+# from torch.utils.tensorboard import SummaryWriter
+# writer = SummaryWriter("./runs/training")
+
+for epoch in tqdm(range(n_epochs)):
+    print("Epoch " + str(epoch)) 
+            
+    train_l, train_a = train_epoch(model, train_loader, criterion, optimizer)
+    val_l, val_a = val_model(model, val_loader, criterion)
+    
+#     for name, param in model.named_parameters():
+#         writer.add_histogram('grad_' + name, param.grad.data, epoch)
+    
+    Train_loss.append(train_l)
+    Train_acc.append(train_a)
+    Val_loss.append(val_l)
+    Val_acc.append(val_a)
+    
+#     writer.add_scalars('loss', {'train': train_l, 'val': val_l}, epoch)
+#     writer.add_scalars('acc', {'train': train_a, 'val': val_a}, epoch)
+
 
 class MyDataset(Dataset):
     def __init__(self, values):
@@ -283,3 +373,4 @@ pressure = pressure*constant
 p = predictMaxPressure(protocol)
 
 print("Pressure:", p)
+
