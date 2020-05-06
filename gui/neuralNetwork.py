@@ -360,7 +360,8 @@ constant = 72
 # function that is called by gui to get the maxPressure value
 # not sure where to put it so i decided to put it after data parsing
 def predictMaxPressure(protocol):
-    d = MyDataset([protocol])
+    x, y = protocol
+    d = MyDataset([x])
     d_args = dict(shuffle=True, batch_size=256, num_workers=num_workers, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64)
     d_loader = DataLoader(d, **d_args)
     for y in d_loader:
@@ -369,10 +370,7 @@ def predictMaxPressure(protocol):
       _, predicted = torch.max(outputs.data, 1)
     return predicted.item()*20*constant
 
-protocol, pressure = result[0]
-pressure = pressure*constant
-
-p = predictMaxPressure(protocol)
+p = predictMaxPressure(result[0])
 
 print("Pressure:", p)
 
