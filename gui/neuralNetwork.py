@@ -177,9 +177,11 @@ def organizeProtocol(protocol, gauge, ivLoc):
     for i, x in enumerate(sorted(list(gaugeTypes))):
         mapGauge[x] = i
     mapIV = dict()
+    print(mapGauge)
     for i, x in enumerate(sorted(list(ivLocation))):
         mapIV[x] = i
-    return ([mapGauge[gauge], mapIV[ivLoc] + protocol , 0])
+    print(mapIV)
+    return ([mapGauge[gauge], mapIV[ivLoc]] + protocol, 1)
 
 
 result = organizeData()

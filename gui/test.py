@@ -93,22 +93,23 @@ class ExampleApp(QtWidgets.QMainWindow, bmeGUI.Ui_MainWindow):
 			 self.percentMInput.toPlainText() != "" or self.flowRateInput.toPlainText() != ""):
 
 			# processes the data that will be inputted into the neural network
-			self.contrast = int(self.constrastInput.toPlainText())
-			self.saline = int(self.salineInput.toPlainText())
-			self.mixed = int(self.mixedInput.toPlainText())
-			self.amountC = int(self.amountCInput.toPlainText())
-			self.amountS = int(self.amountSInput.toPlainText())
-			self.amountM = int(self.amountMInput.toPlainText())
-			self.percentM = int(self.percentMInput.toPlainText())
-			self.flowRate = int(self.flowRateInput.toPlainText())
-			self.gaugeType = int(self.gaugeType.toPlainText())
-			self.location = int(self.location.toPlainText())
+			self.contrast = int(self.constrastInput.toPlainText().strip())
+			self.saline = int(self.salineInput.toPlainText().strip())
+			self.mixed = int(self.mixedInput.toPlainText().strip())
+			self.amountC = int(self.amountCInput.toPlainText().strip())
+			self.amountS = int(self.amountSInput.toPlainText().strip())
+			self.amountM = int(self.amountMInput.toPlainText().strip())
+			self.percentM = int(self.percentMInput.toPlainText().strip())
+			self.flowRate = float(self.flowRateInput.toPlainText().strip())
+			self.gaugeType = self.gaugeType.currentText()
+			self.location = self.comboBox.currentText()
 			protocol = [self.contrast, self.saline, self.mixed, self.amountC, self.amountS, self.amountM, self.percentM, self.flowRate]
-			organizedProtocl = organizeProtocol(protocol, self.gaugeType, self.location)
-			maxPressureResult = neuralNetwork.predictMaxPressure(organizedProtocl)
+			organizedProtocol = neuralNetwork.organizeProtocol(protocol, self.gaugeType, self.location)
+			print(organizedProtocol)
+			maxPressureResult = neuralNetwork.predictMaxPressure(organizedProtocol)
 			while maxPressureResult is None:
 				pass
-			self.console_log.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
+			self.neuralNetResults.setPlainText("Predicted Max Pressure: " + str(maxPressureResult))
 			return maxPressureResult
 
 
