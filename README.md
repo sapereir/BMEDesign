@@ -1,6 +1,9 @@
 # BMEDesign
 
-Math Model: folder for the MatLab solution (in MatLab)  Python Files: folder for the data parsing files used by the MatLab solution (in Python)  NeuralNetwork: folder for the Neural Network Solution (in Jupyter Notebook/Python)   GUI: folder for the GUI files (in Python)
+Math Model: folder for the MatLab solution (in MatLab)  
+Python Files: folder for the data parsing files used by the MatLab solution (in Python)  
+NeuralNetwork: folder for the Neural Network Solution (in Jupyter Notebook/Python)  
+GUI: folder for the GUI files (in Python)
 
 To run the GUI:
 1. open terminal
